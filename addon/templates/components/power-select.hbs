@@ -70,6 +70,12 @@
         searchMessage=(readonly searchMessage)
         select=(readonly publicAPI)
       }}
+    {{else if searchQueryLengthTooShort}}
+      <ul class="ember-power-select-options" role="listbox">
+        <li class="ember-power-select-option ember-power-select-option--no-matches-message" role="option">
+          {{searchQueryLengthMessage}}.
+        </li>
+      </ul>
     {{else if mustShowNoMessages}}
       {{#if (hasBlock "inverse")}}
         {{yield to="inverse"}}

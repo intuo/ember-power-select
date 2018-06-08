@@ -82,6 +82,7 @@ export default Component.extend({
   loadingMessage: fallbackIfUndefined('Loading options...'),
   noMatchesMessage: fallbackIfUndefined('No results found'),
   searchMessage: fallbackIfUndefined('Type to search'),
+  searchQueryLength: fallbackIfUndefined(3),
   closeOnSelect: fallbackIfUndefined(true),
   defaultHighlighted: fallbackIfUndefined(defaultHighlighted),
   typeAheadMatcher: fallbackIfUndefined(defaultTypeAheadMatcher),
@@ -133,6 +134,12 @@ export default Component.extend({
   },
 
   // CPs
+  searchQueryLengthMessage: computed(function() {
+    if (this.get('searchQueryLengthMessage18n')) return this.get('searchQueryLengthMessage18n')
+
+    return `Provide at least ${this.get('searchQueryLength')} characters`
+  }),
+
   inTesting: computed(function() {
     let config = getOwner(this).resolveRegistration('config:environment');
     return config.environment === 'test';
@@ -201,6 +208,11 @@ export default Component.extend({
     return !publicAPI.loading
       && publicAPI.resultsCount === 0
       && (!this.get('search') || publicAPI.lastSearchedText.length > 0);
+  }),
+
+  searchQueryLengthTooShort: computed('search', 'publicAPI.{searchText,resultsCount,loading}', function() {
+    return this.get('publicAPI.searchText.length') > 0 &&
+      (this.get('publicAPI.searchText.length') < this.get('searchQueryLength'));
   }),
 
   // Actions
