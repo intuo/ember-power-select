@@ -82,6 +82,7 @@ export default Component.extend({
   loadingMessage: fallbackIfUndefined('Loading options...'),
   noMatchesMessage: fallbackIfUndefined('No results found'),
   searchMessage: fallbackIfUndefined('Type to search'),
+  searchQueryLength: fallbackIfUndefined(3),
   closeOnSelect: fallbackIfUndefined(true),
   defaultHighlighted: fallbackIfUndefined(defaultHighlighted),
   typeAheadMatcher: fallbackIfUndefined(defaultTypeAheadMatcher),
@@ -202,6 +203,11 @@ export default Component.extend({
       && publicAPI.resultsCount === 0
       && (!this.get('search') || publicAPI.lastSearchedText.length > 0);
   }),
+
+  searchQueryLengthTooShort: computed('search', 'publicAPI._expirableSearchText', function() {
+    return this.get('_expirableSearchText.length') !== 0 &&
+      this.get('_expirableSearchText.length') < this.get('searchQueryLength');
+  }).
 
   // Actions
   actions: {
