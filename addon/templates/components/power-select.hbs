@@ -22,10 +22,11 @@
     ariaLabel=(readonly ariaLabel)
     ariaLabelledBy=(readonly ariaLabelledBy)
     ariaRequired=(readonly required)
+    title=(readonly title)
     class=(readonly concatenatedTriggerClasses)
     extra=(readonly extra)
     id=(readonly triggerId)
-    eventType="mousedown"
+    eventType=(or eventType "mousedown")
     onKeyDown=(action "onTriggerKeydown")
     onFocus=(action "onTriggerFocus")
     onBlur=(action "onTriggerBlur")
@@ -53,6 +54,7 @@
 
   {{#dropdown.content _contentTagName=_contentTagName class=(readonly concatenatedDropdownClasses)}}
     {{component beforeOptionsComponent
+      animationEnabled=(readonly animationEnabled)
       extra=(readonly extra)
       listboxId=(readonly optionsId)
       onInput=(action "onInput")
@@ -95,6 +97,7 @@
         id=(readonly optionsId)
         options=(readonly publicAPI.results)
         optionsComponent=(readonly optionsComponent)
+        highlightOnHover=(readonly highlightOnHover)
         groupComponent=(readonly groupComponent)
         select=(readonly publicAPI)
         as |option term|}}

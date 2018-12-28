@@ -9,6 +9,7 @@ import { DEBUG } from '@glimmer/env';
 import { isBlank } from '@ember/utils';
 import { isArray as isEmberArray } from '@ember/array';
 import ArrayProxy from '@ember/array/proxy';
+import ObjectProxy from '@ember/object/proxy';
 import layout from '../templates/components/power-select';
 import fallbackIfUndefined from '../utils/computed-fallback-if-undefined';
 import optionsMatcher from '../utils/computed-options-matcher';
@@ -86,6 +87,7 @@ export default Component.extend({
   closeOnSelect: fallbackIfUndefined(true),
   defaultHighlighted: fallbackIfUndefined(defaultHighlighted),
   typeAheadMatcher: fallbackIfUndefined(defaultTypeAheadMatcher),
+  highlightOnHover: fallbackIfUndefined(true),
 
   afterOptionsComponent: fallbackIfUndefined(null),
   beforeOptionsComponent: fallbackIfUndefined('power-select/before-options'),
@@ -150,7 +152,7 @@ export default Component.extend({
       return null;
     },
     set(_, selected) {
-      if (selected && get(selected, 'then')) {
+      if (selected && !(selected instanceof ObjectProxy) && get(selected, 'then')) {
         this.get('_updateSelectedTask').perform(selected);
       } else {
         scheduleOnce('actions', this, this.updateSelection, selected);
@@ -239,7 +241,7 @@ export default Component.extend({
         return false;
       }
       if (e) {
-        this.openingEvent = e;
+        this.set('openingEvent', e);
         if (e.type === 'keydown' && (e.keyCode === 38 || e.keyCode === 40)) {
           e.preventDefault();
         }
@@ -253,7 +255,7 @@ export default Component.extend({
         return false;
       }
       if (e) {
-        this.openingEvent = null;
+        this.set('openingEvent', null);
       }
       this.updateState({ highlighted: undefined });
     },
@@ -389,7 +391,9 @@ export default Component.extend({
     },
 
     onTriggerBlur(_, event) {
-      this.send('deactivate');
+      if (!this.isDestroying) {
+        this.send('deactivate');
+      }
       let action = this.get('onblur');
       if (action) {
         action(this.get('publicAPI'), event);
@@ -397,7 +401,9 @@ export default Component.extend({
     },
 
     onBlur(event) {
-      this.send('deactivate');
+      if (!this.isDestroying) {
+        this.send('deactivate');
+      }
       let action = this.get('onblur');
       if (action) {
         action(this.get('publicAPI'), event);
